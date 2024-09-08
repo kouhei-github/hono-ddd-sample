@@ -11,19 +11,11 @@ export class LoginUseCase implements ILoginUseCase{
       const token = await this.je.generate(email, 1, "admin")
       const payload = await this.je.verify(token)
       if(!payload){
-        return {
-          data: 'Tokenが無効です',
-          status: 403,
-          message: 'Tokenが無効です',
-        }
+        return {data: 'Tokenが無効です', status: 403, message: 'Tokenが無効です',}
       }
       return { data: {payload, token}, status: 200, message: 'ログインできました' }
     } catch (e) {
-      return {
-        data: '',
-        status: 400,
-        message: `${e}`,
-      }
+      return {data: '', status: 400, message: `${e}`,}
     }
   }
 
