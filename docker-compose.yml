@@ -1,0 +1,42 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:latest
+    volumes:
+      - ./container/db/postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${USER_PASS}
+      POSTGRES_DB: ${DATABASE}
+      POSTGRES_USER: ${USERNAME}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${USERNAME} -d ${DATABASE}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+
+  hono:
+    image: hono-ddd-app-image
+    container_name: hono-ddd-app-container
+    build:
+      context: .
+      dockerfile: ./container/hono/Dockerfile
+    volumes:
+      - ./hono:/app
+      - /app/node_modules
+    ports:
+      - "8080:8080"
+#    command: bun dev
+    tty: true
+
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    env_file:
+      - "./container/hono/.env"
+    depends_on:
+      db:
+        condition: service_healthy
