@@ -29,8 +29,8 @@ services:
       - ./hono:/app
       - /app/node_modules
     ports:
-      - "8080:8080"
-#    command: bun dev
+      - "5555:3000"
+    command: bun dev
     tty: true
 
     environment:

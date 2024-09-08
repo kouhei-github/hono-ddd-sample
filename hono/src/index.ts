@@ -1,9 +1,14 @@
 import { Hono } from 'hono'
+import {EnvLib} from "./Pkg/Env/EnvLib";
+import {injection} from "./di";
 
-const app = new Hono()
+// 環境変数の読み込み
+const envLib = EnvLib.builder()
 
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
+const app = new Hono().basePath("/api")
+
+const router = injection(app, envLib)
+
+router.register()
 
 export default app
