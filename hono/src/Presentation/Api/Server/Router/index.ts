@@ -9,7 +9,7 @@ export class WebHooks implements IWebHooks {
   constructor(private readonly app: Hono, private readonly auth: IAuthController) {
   }
   register(): void {
-
+    // TODO OpenApiでswagerの作成(hono-openapi)
     // 認証用ルーティング
     this.authRouter()
 
