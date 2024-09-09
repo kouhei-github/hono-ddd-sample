@@ -8,13 +8,18 @@ export class AuthController implements IAuthController {
   }
 
   async login(c: Context): Promise<void | Response>{
-    const body = await c.req.json()
-    const {email, password} = authSchema.parse(body)
-    const result = await this.luc.execute(email, password)
-    if(result.status > 202){
-      return c.json({message: result.message}, 400)
+    try {
+      const body = await c.req.json()
+      const {email, password} = authSchema.parse(body)
+      const result = await this.luc.execute(email, password)
+      return c.json(result.data, result.status)
+    } catch (error) {
+      if (error instanceof Error) {
+        // エラーをキャッチ
+        return c.json({ data: `${error.message}` }, 400)
+      }
+      return c.json({ data: `予期せぬエラーが発生しました` }, 400)
     }
-    return c.json(result.data, result.status)
   }
 
   static builder(luc: ILoginUseCase): IAuthController {
